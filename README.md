@@ -11,8 +11,6 @@ Your goal is to:
 - Evaluate what your system gets right and wrong
 - Reflect on how this mirrors real world AI recommenders
 
-Replace this paragraph with your own summary of what your version does.
-
 ---
 
 ## How The System Works
@@ -22,12 +20,28 @@ Explain your design in plain language.
 Some prompts to answer:
 
 - What features does each `Song` use in your system
-  - For example: genre, mood, energy, tempo
+  mood, energy, tempo_bpm, valence, danceability, acousticness
 - What information does your `UserProfile` store
+  favorite_genre, favorite_mood, target_energy, and likes_acoustic
 - How does your `Recommender` compute a score for each song
+  It turns different features into one score: matching genre and mood adds points, songs closer to the target energy get higher scores, and acousticness is either rewarded or penalized depending on the user’s preference.
 - How do you choose which songs to recommend
+  I score every song, sort by score from highest to lowest, break ties with stronger preference matches (then closer energy), and return the top k songs.
 
-You can include a simple diagram or bullet list if helpful.
+Real-world recommenders first pick a group of possible items, score how well each one matches the user, and then rank them while adding things like variety and freshness. They also keep improving based on feedback.
+
+Algorithm Recipe:
+
+1. Store one user taste profile with `favorite_genre`, `favorite_mood`, `target_energy`, and `likes_acoustic`.
+2. Loop through every song in `data/songs.csv` and give it a score.
+3. Add `+2.0` points for a genre match.
+4. Add `+1.0` point for a mood match.
+5. Add energy similarity points using `2.0 * (1 - min(1, abs(song_energy - target_energy)))` so songs closer to the target energy score higher.
+6. Add an acousticness bonus or penalty depending on whether the user likes acoustic songs.
+7. Sort all songs from highest score to lowest score.
+8. Break ties by choosing the song with the smaller energy distance, then return the top `k` songs.
+
+This simple content-based method works well for a small catalog because it rewards songs that match the user’s stated preferences while still letting the system compare every song in a consistent way.
 
 ---
 
@@ -85,6 +99,7 @@ Examples:
 - It only works on a tiny catalog
 - It does not understand lyrics or language
 - It might over favor one genre or mood
+- It may over-prioritize genre and mood matches, which could hide great songs that fit the user’s energy or acoustic preference better
 
 You will go deeper on this in your model card.
 
