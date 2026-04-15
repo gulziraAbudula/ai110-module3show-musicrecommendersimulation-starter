@@ -111,10 +111,7 @@ Read and complete `model_card.md`:
 
 [**Model Card**](model_card.md)
 
-Write 1 to 2 paragraphs here about what you learned:
-
-- about how recommenders turn data into predictions
-- about where bias or unfairness could show up in systems like this
+I learned that recommender systems turn data into predictions by comparing item features with user preferences and combining those matches into a single score. Things like genre, mood, and energy can be measured and weighted to estimate how much a user will like a song. The system then ranks items based on these scores and can improve over time by learning from user feedback, like clicks or skips.
 
 
 ---
