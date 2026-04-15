@@ -2,110 +2,49 @@
 
 ## 1. Model Name  
 
-Give your model a short, descriptive name.  
-Example: **VibeFinder 1.0**  
+VibeMatch Mini 1.0
 
 ---
 
 ## 2. Intended Use  
 
-Describe what your recommender is designed to do and who it is for. 
-
-Prompts:  
-
-- What kind of recommendations does it generate  
-- What assumptions does it make about the user  
-- Is this for real users or classroom exploration  
-
+This recommender suggests the top 5 songs from a small catalog based on a user's preferred genre, preferred mood, and target energy level. It assumes the user can be represented by a single taste profile (one favorite genre, one favorite mood, and one energy target). 
 ---
 
 ## 3. How the Model Works  
 
-Explain your scoring approach in simple language.  
-
-Prompts:  
-
-- What features of each song are used (genre, energy, mood, etc.)  
-- What user preferences are considered  
-- How does the model turn those into a score  
-- What changes did you make from the starter logic  
-
-Avoid code here. Pretend you are explaining the idea to a friend who does not program.
+Each song includes genre, mood, and numeric audio features like energy. The user profile includes favorite genre, favorite mood, and target energy. For each song, the system adds points for genre match (+2.0) and mood match (+1.0), then adds an energy-similarity score (up to +2.0) based on how close the song energy is to the user's target. Songs are ranked by total score from highest to lowest, with a tie-break that prefers smaller energy distance. Compared with the starter version, this model now has an explicit scoring rule, a deterministic ranking rule, and explanation text for why each song scored the way it did.
 
 ---
 
 ## 4. Data  
 
-Describe the dataset the model uses.  
-
-Prompts:  
-
-- How many songs are in the catalog  
-- What genres or moods are represented  
-- Did you add or remove data  
-- Are there parts of musical taste missing in the dataset  
+The dataset currently contains 10 songs in data/songs.csv. It includes genres such as pop, lofi, rock, ambient, jazz, synthwave, and indie pop, and moods such as happy, chill, intense, relaxed, moody, and focused. This is a very small and curated catalog, so many musical styles, languages, and cultural contexts are missing.
 
 ---
 
 ## 5. Strengths  
 
-Where does your system seem to work well  
-
-Prompts:  
-
-- User types for which it gives reasonable results  
-- Any patterns you think your scoring captures correctly  
-- Cases where the recommendations matched your intuition  
+The system works well for users with clear and simple preferences, especially when they care strongly about one genre/mood pair and a general energy level (for example, chill lofi with low energy). The scoring is easy to explain, and recommendation outputs are deterministic and reproducible. 
 
 ---
 
 ## 6. Limitations and Bias 
 
-Where the system struggles or behaves unfairly. 
-
-Prompts:  
-
-- Features it does not consider  
-- Genres or moods that are underrepresented  
-- Cases where the system overfits to one preference  
-- Ways the scoring might unintentionally favor some users  
+The model is narrow and can over-prioritize genre and mood bonuses over nuanced musical similarity. It does not use tempo, valence, danceability, acousticness, lyrical content, context, or listening history in scoring. Because the catalog is small, underrepresented genres and moods are less likely to be recommended fairly. 
 
 ---
 
-## 7. Evaluation  
-
-How you checked whether the recommender behaved as expected. 
-
-Prompts:  
-
-- Which user profiles you tested  
-- What you looked for in the recommendations  
-- What surprised you  
-- Any simple tests or comparisons you ran  
-
-No need for numeric metrics unless you created some.
+## 7. Evaluation 
 
 ---
 
 ## 8. Future Work  
 
-Ideas for how you would improve the model next.  
-
-Prompts:  
-
-- Additional features or preferences  
-- Better ways to explain recommendations  
-- Improving diversity among the top results  
-- Handling more complex user tastes  
+I would add diversity constraints so the top 5 are not too similar, and improve explanations by reporting exact score components in a user-friendly format.
 
 ---
 
 ## 9. Personal Reflection  
 
-A few sentences about your experience.  
-
-Prompts:  
-
-- What you learned about recommender systems  
-- Something unexpected or interesting you discovered  
-- How this changed the way you think about music recommendation apps  
+I learned that recommendation systems are not only about a scoring formula, but also about ranking behavior, tie-breaks, and input quality. A simple rule can feel accurate in many cases, but edge cases quickly reveal hidden assumptions and bias. 

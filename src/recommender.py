@@ -13,12 +13,25 @@ def _resolve_pref(user_prefs: Dict, primary_key: str, fallback_key: str, default
     return default
 
 
+def _safe_float(value, default: float = 0.0) -> float:
+    """Parse floats defensively so malformed inputs don't crash ranking."""
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return default
+
+
+def _clamp(value: float, low: float, high: float) -> float:
+    return max(low, min(high, value))
+
+
 def _score_song_components(song: Dict, favorite_genre: str, favorite_mood: str, target_energy: float) -> Tuple[float, float, float, float]:
     """Return total score and component values used by both recommenders."""
     genre_score = 2.0 if song.get("genre") == favorite_genre else 0.0
     mood_score = 1.0 if song.get("mood") == favorite_mood else 0.0
 
-    energy_value = float(song.get("energy", 0.0))
+    energy_value = _safe_float(song.get("energy", 0.0), 0.0)
+    energy_value = _clamp(energy_value, 0.0, 1.0)
     energy_distance = abs(energy_value - target_energy)
     energy_score = 2.0 * (1.0 - min(1.0, energy_distance))
 
@@ -143,7 +156,8 @@ def recommend_songs(user_prefs: Dict, songs: List[Dict], k: int = 5) -> List[Tup
     """
     favorite_genre = str(_resolve_pref(user_prefs, "favorite_genre", "genre", ""))
     favorite_mood = str(_resolve_pref(user_prefs, "favorite_mood", "mood", ""))
-    target_energy = float(_resolve_pref(user_prefs, "target_energy", "energy", 0.0))
+    target_energy = _safe_float(_resolve_pref(user_prefs, "target_energy", "energy", 0.0), 0.0)
+    target_energy = _clamp(target_energy, 0.0, 1.0)
 
     scored_songs = []
     for song in songs:
